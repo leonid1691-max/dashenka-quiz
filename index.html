@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>10 вопросов</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(145deg, #fff7fa, #f5f0ff);
+  color: #29242a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.app {
+  width: 100%;
+  max-width: 500px;
+}
+
+.card {
+  background: rgba(255,255,255,.94);
+  border-radius: 28px;
+  padding: 28px 22px;
+  box-shadow: 0 15px 50px rgba(100,70,100,.15);
+}
+
+.top {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.small {
+  font-size: 14px;
+  color: #9b8794;
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-size: 26px;
+  margin: 0;
+}
+
+.progress {
+  height: 7px;
+  background: #eee6eb;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 20px 0 28px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 10%;
+  background: #d8759d;
+  border-radius: 10px;
+  transition: width .3s ease;
+}
+
+.question {
+  font-size: 21px;
+  line-height: 1.35;
+  font-weight: 700;
+  margin-bottom: 22px;
+}
+
+.answer {
+  width: 100%;
+  border: 2px solid #eee6eb;
+  background: #fff;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: 17px;
+  font-size: 16px;
+  text-align: left;
+  color: #29242a;
+  transition: .2s;
+}
+
+.answer:active {
+  transform: scale(.98);
+  background: #fff0f5;
+  border-color: #d8759d;
+}
+
+.final {
+  text-align: center;
+  display: none;
+}
+
+.heart {
+  font-size: 55px;
+  margin-bottom: 15px;
+}
+
+.final h2 {
+  font-size: 27px;
+  margin-bottom: 18px;
+}
+
+.final p {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.kchau {
+  font-size: 30px;
+  margin-top: 25px;
+}
+
+.fade {
+  animation: fade .3s ease;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="card" id="quiz">
+
+    <div class="top">
+      <div class="small" id="counter">Вопрос 1 из 10</div>
+      <h1>Есть к тебе 10 вопросов...</h1>
+    </div>
+
+    <div class="progress">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <div id="questionBlock" class="fade">
+
+      <div class="question" id="question"></div>
+
+      <div id="answers"></div>
+
+    </div>
+
+  </div>
+
+  <div class="card final" id="final">
+
+    <div class="heart">❤️</div>
+
+    <h2>Ну что...</h2>
+
+    <p>
+      Правильного ответа здесь не было.
+    </p>
+
+    <p>
+      Мне просто хотелось, чтобы в конце ты поняла,
+      почему я придумал именно эти вопросы.
+    </p>
+
+    <div class="kchau">Кчау 😜</div>
+
+  </div>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+q: "Что для тебя важнее всего в человеке рядом?",
+a: [
+"Спокойствие и надёжность",
+"Чувство юмора",
+"Умение понимать без слов",
+"Всё перечисленное"
+]
+},
+
+{
+q: "Что сильнее всего сближает двух людей?",
+a: [
+"Много времени вместе",
+"Общие приключения",
+"Откровенные разговоры",
+"То, что невозможно объяснить"
+]
+},
+
+{
+q: "Если человек иногда тебя раздражает, но ты всё равно хочешь быть рядом с ним — это…",
+a: [
+"Странность",
+"Привычка",
+"Особая связь",
+"Надо проверить, кто этот человек"
+]
+},
+
+{
+q: "Что ты скорее выберешь?",
+a: [
+"Идеальные отношения без ссор",
+"Отношения, где иногда сложно, но люди учатся понимать друг друга",
+"Лучше вообще без отношений",
+"Зависит от человека"
+]
+},
+
+{
+q: "Представь, что человек тебе дорог, но между вами расстояние. Что важнее?",
+a: [
+"Постоянно быть на связи",
+"Доверять друг другу",
+"Ждать встречи",
+"Всё сразу"
+]
+},
+
+{
+q: "Как понять, что человек действительно стал тебе близким?",
+a: [
+"Хочется рассказывать ему всё",
+"Его настроение начинает иметь значение",
+"Хочется заботиться о нём",
+"Ты замечаешь, что ищешь его среди других людей"
+]
+},
+
+{
+q: "Если человек иногда говорит или делает глупости, но искренне старается сделать тебя счастливее, что делать?",
+a: [
+"Простить",
+"Объяснить ему",
+"Иногда смеяться над ним",
+"Всё вместе 😄"
+]
+},
+
+{
+q: "Сколько поцелуев ты бы хотела получать каждый день в левую и правую щёку?",
+a: [
+"Бесконечно много",
+"Бесконечно много + 1",
+"Нисколько 💅",
+"Мяу 🐱"
+]
+},
+
+{
+q: "Если однажды ты поймёшь, что один конкретный человек стал частью твоей жизни настолько, что без него уже непривычно…",
+a: [
+"Испугаюсь",
+"Сделаю вид, что ничего не происходит",
+"Приму это",
+"Посмотрю, чувствует ли он то же самое"
+]
+},
+
+{
+q: "И последний вопрос. Самый важный. Если после всех этих вопросов ты вдруг поняла, что каждый из них подозрительно напоминает одну конкретную историю двух людей, что бы ты ответила?",
+a: [
+"Совпадение",
+"Очень подозрительное совпадение",
+"Кажется, я знаю, о ком это",
+"Я тоже давно думаю об этих двух людях"
+]
+}
+
+];
+
+let current = 0;
+
+const question = document.getElementById("question");
+const answers = document.getElementById("answers");
+const counter = document.getElementById("counter");
+const progress = document.getElementById("progress");
+const questionBlock = document.getElementById("questionBlock");
+const quiz = document.getElementById("quiz");
+const final = document.getElementById("final");
+
+function showQuestion() {
+
+  const item = questions[current];
+
+  questionBlock.classList.remove("fade");
+
+  setTimeout(() => {
+
+    questionBlock.classList.add("fade");
+
+    question.textContent = item.q;
+    answers.innerHTML = "";
+
+    item.a.forEach(answer => {
+
+      const button = document.createElement("button");
+
+      button.className = "answer";
+      button.textContent = answer;
+
+      button.onclick = nextQuestion;
+
+      answers.appendChild(button);
+
+    });
+
+    counter.textContent =
+      "Вопрос " + (current + 1) + " из " + questions.length;
+
+    progress.style.width =
+      ((current + 1) / questions.length * 100) + "%";
+
+  }, 50);
+}
+
+function nextQuestion() {
+
+  current++;
+
+  if (current >= questions.length) {
+
+    quiz.style.display = "none";
+    final.style.display = "block";
+
+    return;
+
+  }
+
+  showQuestion();
+
+}
+
+showQuestion();
+
+</script>
+
+</body>
+</html>
