@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Для тебя ❤️</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #ffd6e7, #e8d8ff, #d8f0ff);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        color: #292333;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 520px;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 28px;
+        padding: 28px 22px;
+        box-shadow: 0 15px 45px rgba(80, 50, 100, 0.18);
+        animation: appear 0.35s ease;
+    }
+
+    @keyframes appear {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 14px;
+        color: #8b8194;
+    }
+
+    .progress {
+        height: 7px;
+        background: #eee7f2;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 25px;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #ff7eb3, #b18cff);
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+
+    h1 {
+        font-size: 25px;
+        line-height: 1.3;
+        margin: 0 0 25px;
+    }
+
+    .answer {
+        width: 100%;
+        border: none;
+        background: #f7f3f9;
+        border-radius: 17px;
+        padding: 16px;
+        margin-bottom: 12px;
+        font-size: 16px;
+        line-height: 1.35;
+        text-align: left;
+        color: #302b38;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .answer:hover {
+        background: #eee6f3;
+        transform: translateY(-1px);
+    }
+
+    .answer:active {
+        transform: scale(0.98);
+    }
+
+    /* Напоминание */
+
+    .reminder {
+        position: fixed;
+        left: 50%;
+        bottom: 35px;
+
+        transform: translateX(-50%) translateY(30px);
+
+        background: rgba(40, 34, 48, 0.95);
+        color: white;
+
+        padding: 14px 22px;
+
+        border-radius: 18px;
+
+        font-size: 17px;
+        font-weight: 600;
+
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.22);
+
+        opacity: 0;
+        pointer-events: none;
+
+        transition: all 0.35s ease;
+
+        z-index: 100;
+
+        white-space: nowrap;
+    }
+
+    .reminder.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    /* Финальный экран */
+
+    .final {
+        text-align: center;
+    }
+
+    .final-heart {
+        font-size: 58px;
+        margin-bottom: 10px;
+        animation: heartbeat 1.2s infinite;
+    }
+
+    @keyframes heartbeat {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.12);
+        }
+    }
+
+    .final h1 {
+        font-size: 30px;
+        margin-bottom: 25px;
+    }
+
+    .final-text {
+        font-size: 18px;
+        line-height: 1.55;
+        color: #554d5d;
+    }
+
+    .final-text strong {
+        color: #302b38;
+    }
+
+    .kiss {
+        margin-top: 25px;
+        font-size: 32px;
+    }
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="card" id="quiz"></div>
+
+</div>
+
+
+<!-- Напоминание -->
+
+<div class="reminder" id="reminder"></div>
+
+
+<script>
+
+const questions = [
+
+    {
+        question: "Что для тебя важнее всего в человеке рядом?",
+        answers: [
+            "А) Спокойствие и надёжность",
+            "Б) Чувство юмора",
+            "В) Отсутствие контроля",
+            "Г) Волосы на голове"
+        ]
+    },
+
+    {
+        question: "Что сильнее всего сближает двух людей?",
+        answers: [
+            "А) Много времени вместе",
+            "Б) Общие приключения",
+            "В) Откровенные разговоры",
+            "Г) То, что невозможно объяснить"
+        ]
+    },
+
+    {
+        question: "Если человек иногда тебя раздражает, но ты всё равно хочешь быть рядом с ним — это…",
+        answers: [
+            "А) Странность",
+            "Б) Привычка",
+            "В) Особая связь",
+            "Г) Нормально"
+        ]
+    },
+
+    {
+        question: "Что ты скорее выберешь?",
+        answers: [
+            "А) Идеальные отношения без ссор",
+            "Б) Отношения, где иногда сложно, но люди учатся понимать друг друга",
+            "В) Лучше вообще без отношений",
+            "Г) Белый Лексус"
+        ]
+    },
+
+    {
+        question: "Представь, что человек тебе дорог, но между вами расстояние. Что важнее?",
+        answers: [
+            "А) Постоянно быть на связи",
+            "Б) Доверять друг другу",
+            "В) Ждать встречи",
+            "Г) Всё сразу"
+        ]
+    },
+
+    {
+        question: "Как понять, что человек действительно стал тебе близким?",
+        answers: [
+            "А) Хочется рассказывать ему всё",
+            "Б) Его настроение начинает иметь значение",
+            "В) Хочется заботиться о нём",
+            "Г) Ты замечаешь, что ищешь его среди других людей"
+        ]
+    },
+
+    {
+        question: "Если человек иногда говорит или делает глупости, но искренне старается сделать тебя счастливее, что делать?",
+        answers: [
+            "А) Простить",
+            "Б) Объяснить ему",
+            "В) Иногда смеяться над ним",
+            "Г) Всё вместе 😄"
+        ]
+    },
+
+    {
+        question: "Сколько поцелуев тебе хотитица получать каждый день в левую и правую щёку?",
+        answers: [
+            "А) Бесконечно много",
+            "Б) Бесконечно много + 1",
+            "В) Нисколько 💅",
+            "Г) Сколько любица, столько и хотитица"
+        ]
+    },
+
+    {
+        question: "Если бы ты могла выбрать 1 песню на полгода вперёд — это была бы:",
+        answers: [
+            "А) Я тебя могну",
+            "Б) Ты не бойся ночи",
+            "В) Песенка разбойников",
+            "Г) Подо мной м5 асфальт 8"
+        ]
+    },
+
+    {
+        question: "И последний вопрос. Самый важный. Если после всех этих вопросов ты вдруг поняла, что каждый из них подозрительно напоминает одну конкретную историю двух людей, что бы ты ответила?",
+        answers: [
+            "А) Совпадение",
+            "Б) Очень подозрительное совпадение",
+            "В) Кажется, я знаю, о ком это",
+            "Г) Мы? 😂"
+        ]
+    }
+
+];
+
+
+/* Напоминания после вопросов */
+
+const reminders = [
+
+    "Ты цветочек ❤️",
+
+    "Товарищ Лейтенант 🫡",
+
+    "Мяу 😸",
+
+    "Львица 🦁",
+
+    "Тигрица 🐯",
+
+    "Умница 😘",
+
+    "Красавица 😍",
+
+    "Счастье 🥹",
+
+    "Дашенька 🫶"
+
+];
+
+
+let currentQuestion = 0;
+
+const quiz = document.getElementById("quiz");
+
+const reminder = document.getElementById("reminder");
+
+
+/* Показываем вопрос */
+
+function showQuestion() {
+
+    const question = questions[currentQuestion];
+
+    const progress =
+        ((currentQuestion + 1) / questions.length) * 100;
+
+
+    quiz.innerHTML = `
+
+        <div class="top">
+
+            <span>
+                Вопрос ${currentQuestion + 1} из ${questions.length}
+            </span>
+
+            <span>❤️</span>
+
+        </div>
+
+
+        <div class="progress">
+
+            <div
+                class="progress-bar"
+                style="width: ${progress}%">
+            </div>
+
+        </div>
+
+
+        <h1>
+            ${question.question}
+        </h1>
+
+
+        <div>
+
+            ${question.answers.map((answer, index) => `
+
+                <button
+                    class="answer"
+                    onclick="nextQuestion(${index})">
+
+                    ${answer}
+
+                </button>
+
+            `).join("")}
+
+        </div>
+
+    `;
+}
+
+
+/* Показываем маленькое напоминание */
+
+function showReminder(text) {
+
+    reminder.textContent = text;
+
+    reminder.classList.add("show");
+
+
+    setTimeout(() => {
+
+        reminder.classList.remove("show");
+
+    }, 1200);
+
+}
+
+
+/* Переход после ответа */
+
+function nextQuestion(answerIndex) {
+
+    /*
+        Для вопросов 1–9
+        показываем соответствующее обращение.
+    */
+
+    if (currentQuestion < reminders.length) {
+
+        showReminder(
+            reminders[currentQuestion]
+        );
+
+    }
+
+
+    currentQuestion++;
+
+
+    /*
+        Делаем небольшую паузу,
+        чтобы напоминание успело появиться.
+    */
+
+    setTimeout(() => {
+
+        if (currentQuestion >= questions.length) {
+
+            showFinal();
+
+        } else {
+
+            showQuestion();
+
+        }
+
+    }, 1300);
+
+}
+
+
+/* Финальный экран */
+
+function showFinal() {
+
+    quiz.innerHTML = `
+
+        <div class="final">
+
+            <div class="final-heart">
+                ❤️
+            </div>
+
+
+            <h1>
+                Ну что…
+            </h1>
+
+
+            <div class="final-text">
+
+                Правильного ответа здесь не было, Дашуль.
+
+                <br><br>
+
+                Я скучаю по тебе и хочу узнать ближе
+                твоих тараканов 😂
+
+                <br><br>
+
+                Спасибо, что ответила честно 😘❤️
+
+            </div>
+
+
+            <div class="kiss">
+                🫶
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* Запускаем */
+
+showQuestion();
+
+</script>
+
+</body>
+</html>
